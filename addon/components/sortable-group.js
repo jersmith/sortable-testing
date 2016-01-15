@@ -16,6 +16,13 @@ export default Component.extend({
   direction: 'y',
 
   /**
+    @property constrainDirection
+    @type string
+    @default true
+  */
+  constrainDirection: true,
+
+  /**
     @property model
     @type Any
     @default null
