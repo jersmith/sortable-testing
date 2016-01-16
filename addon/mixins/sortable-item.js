@@ -398,6 +398,10 @@ export default Mixin.create({
     }
   },
 
+  _sendDrag(position) {
+    this.sendAction("onDrag", position);
+  },
+
   /**
     @method _scheduleApplyPosition
     @private
@@ -469,6 +473,7 @@ export default Mixin.create({
     }
 
     run.throttle(this, '_tellGroup', 'update', updateInterval);
+    run.throttle(this, '_sendDrag', {x: dimension, y: secondaryDimension}, updateInterval);
   },
 
   /**
