@@ -374,14 +374,16 @@ export default Mixin.create({
       scrollOriginY = parentElement.offset().top;
 
       return event => {
-        let dx = getX(event) - dragOriginX;
-        let dy = getY(event) - dragOriginY;
+        let pageX = getX(event);
+        let pageY = getY(event);
+        let dx = pageX - dragOriginX;
+        let dy = pageY - dragOriginY;
         let scrollX = parentElement.offset().left;
         let scrollY = parentElement.offset().top;
         let x = elementOriginX + dx + (scrollOriginX - scrollX);
         let y = elementOriginY + dy + (scrollOriginY - scrollY);
 
-        this._drag(x, y);
+        this._drag(x, y, pageX, pageY);
       };
     }
   },
@@ -454,7 +456,7 @@ export default Mixin.create({
     @method _drag
     @private
   */
-  _drag(dimension, secondaryDimension) {
+  _drag(dimension, secondaryDimension, pageX, pageY) {
     let updateInterval = this.get('updateInterval');
     const groupDirection = this.get('group.direction');
     const constrainDirection = this.get('group.constrainDirection');
@@ -470,10 +472,11 @@ export default Mixin.create({
     } else {
       this.set('x', dimension);
       this.set('y', secondaryDimension);
+
+      run.throttle(this, '_sendDrag', {x: pageX, y: pageY}, updateInterval);
     }
 
     run.throttle(this, '_tellGroup', 'update', updateInterval);
-    run.throttle(this, '_sendDrag', {x: dimension, y: secondaryDimension}, updateInterval);
   },
 
   /**
